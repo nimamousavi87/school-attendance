@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
@@ -18,10 +17,7 @@
       color: #f1f5f9;
     }
 
-    .layout {
-      display: flex;
-      min-height: 100vh;
-    }
+    .layout { display: flex; min-height: 100vh; }
 
     aside {
       width: 245px;
@@ -31,10 +27,7 @@
       flex-shrink: 0;
     }
 
-    .brand {
-      font-size: 20px;
-      font-weight: bold;
-    }
+    .brand { font-size: 20px; font-weight: bold; }
 
     .school {
       color: #94a3b8;
@@ -56,7 +49,6 @@
       background: #182438;
       color: #cbd5e1;
       text-decoration: none;
-      cursor: pointer;
       font-size: 14px;
     }
 
@@ -81,10 +73,7 @@
       margin-bottom: 28px;
     }
 
-    h1 {
-      font-size: 23px;
-      margin: 0 0 10px;
-    }
+    h1 { font-size: 23px; margin: 0 0 10px; }
 
     .subtitle {
       color: #94a3b8;
@@ -122,13 +111,37 @@
       font-weight: bold;
     }
 
-    .section {
-      margin-top: 25px;
-    }
+    .section { margin-top: 25px; }
 
     .section h2 {
       font-size: 17px;
       margin: 0 0 17px;
+    }
+
+    .classes-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .class-card {
+      background: #17263a;
+      border: 1px solid #2b405d;
+      border-radius: 12px;
+      padding: 18px;
+    }
+
+    .class-icon { font-size: 24px; margin-bottom: 12px; }
+
+    .class-name {
+      font-size: 15px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .class-field {
+      color: #94a3b8;
+      font-size: 12px;
     }
 
     .empty {
@@ -139,11 +152,7 @@
       font-size: 14px;
     }
 
-    .actions {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
+    .section-card { margin-top: 25px; }
 
     button {
       font-family: inherit;
@@ -151,21 +160,11 @@
       padding: 12px 17px;
       border-radius: 9px;
       color: white;
-      background: #2563eb;
+      background: #26364e;
       cursor: pointer;
     }
 
-    button:hover {
-      background: #1d4ed8;
-    }
-
-    .secondary {
-      background: #26364e;
-    }
-
-    .secondary:hover {
-      background: #365477;
-    }
+    button:hover { background: #365477; }
 
     .notice {
       background: #17263a;
@@ -184,7 +183,7 @@
     }
 
     @media (max-width: 900px) {
-      .stats {
+      .stats, .classes-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
     }
@@ -202,13 +201,15 @@
 
       h1 { font-size: 19px; }
 
-      .stats { gap: 10px; }
+      .stats, .classes-grid { gap: 10px; }
 
       .card { padding: 16px; }
     }
 
     @media (max-width: 360px) {
-      .stats { grid-template-columns: 1fr; }
+      .stats, .classes-grid {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
@@ -223,27 +224,13 @@
 
     <div class="menu-title">مدیریت آموزشی</div>
 
-    <a class="menu-item active" href="teacher.html">
-      🏠 داشبورد
-    </a>
-
-    <a class="menu-item" href="#classes">
-      🏫 کلاس‌های من
-    </a>
-
-    <a class="menu-item" href="#sessions">
-      📋 جلسات حضور و غیاب
-    </a>
-
-    <a class="menu-item" href="#reports">
-      📊 گزارش حضور و غیاب
-    </a>
+    <a class="menu-item active" href="teacher.html">🏠 داشبورد</a>
+    <a class="menu-item" href="#classes">🏫 کلاس‌های من</a>
+    <a class="menu-item" href="#sessions">📋 جلسات حضور و غیاب</a>
+    <a class="menu-item" href="#reports">📊 گزارش‌ها</a>
 
     <div class="menu-title">حساب کاربری</div>
-
-    <button class="secondary" id="logoutBtn">
-      خروج از حساب
-    </button>
+    <button id="logoutBtn">خروج از حساب</button>
   </aside>
 
   <main>
@@ -281,10 +268,10 @@
     </div>
 
     <section class="section card" id="classes">
-      <h2>🏫 کلاس‌های من</h2>
+      <h2>🏫 کلاس‌های اختصاص‌یافته به من</h2>
 
-      <div class="empty">
-        کلاس‌های اختصاص‌یافته به حساب شما پس از اتصال به پایگاه داده نمایش داده می‌شوند.
+      <div id="classesList" class="classes-grid">
+        <div class="empty">در حال دریافت کلاس‌ها...</div>
       </div>
     </section>
 
@@ -295,26 +282,19 @@
         هنوز جلسه‌ای برای نمایش وجود ندارد.
       </div>
 
-      <div class="actions">
-        <button id="createSessionBtn">
-          ➕ ایجاد جلسه جدید
-        </button>
-      </div>
-
       <div class="notice">
-        با ایجاد جلسه، یک لینک اختصاصی برای ثبت حضور دانش‌آموزان ساخته خواهد شد.
+        در مرحله بعد امکان ایجاد جلسه و دریافت لینک اختصاصی حضور و غیاب فعال می‌شود.
       </div>
-
-      <div id="error"></div>
     </section>
 
     <section class="section card" id="reports">
       <h2>📊 گزارش‌ها</h2>
-
       <div class="empty">
-        گزارش حضور و غیاب پس از اتصال کامل سامانه نمایش داده خواهد شد.
+        گزارش حضور و غیاب پس از تکمیل بخش جلسات نمایش داده خواهد شد.
       </div>
     </section>
+
+    <div id="error"></div>
 
   </main>
 
@@ -342,10 +322,10 @@
 
     try {
 
-      const { data: sessionData } =
+      const { data: sessionData, error: sessionError } =
         await supabase.auth.getSession();
 
-      if (!sessionData.session) {
+      if (sessionError || !sessionData.session) {
         location.replace("index.html");
         return;
       }
@@ -358,11 +338,13 @@
         return;
       }
 
+      const userId = userData.user.id;
+
       const { data: profile, error: profileError } =
         await supabase
           .from("profiles")
           .select("full_name, role, is_active")
-          .eq("id", userData.user.id)
+          .eq("id", userId)
           .single();
 
       if (
@@ -379,58 +361,104 @@
       $("teacherName").textContent =
         "معلم: " + profile.full_name;
 
-      const { data: assignments, error: assignmentsError } =
+      // دریافت کلاس‌های اختصاص‌یافته به معلم
+
+      const { data: assignments, error: classesError } =
         await supabase
           .from("teacher_classes")
-          .select("class_id")
-          .eq("teacher_id", userData.user.id);
+          .select(`
+            class_id,
+            classes (
+              id,
+              grade,
+              field
+            )
+          `)
+          .eq("teacher_id", userId);
 
-      if (assignmentsError) throw assignmentsError;
-
-      const { count: sessionsCount, error: sessionsError } =
-        await supabase
-          .from("sessions")
-          .select("*", { count: "exact", head: true })
-          .eq("teacher_id", userData.user.id);
-
-      if (sessionsError) throw sessionsError;
-
-      const { data: sessions, error: attendanceError } =
-        await supabase
-          .from("sessions")
-          .select("id")
-          .eq("teacher_id", userData.user.id);
-
-      if (attendanceError) throw attendanceError;
-
-      let attendanceCount = 0;
-
-      if (sessions && sessions.length > 0) {
-        const sessionIds = sessions.map(item => item.id);
-
-        const { count, error } = await supabase
-          .from("attendance")
-          .select("*", { count: "exact", head: true })
-          .in("session_id", sessionIds);
-
-        if (error) throw error;
-
-        attendanceCount = count ?? 0;
-      }
+      if (classesError) throw classesError;
 
       $("classesCount").textContent =
         assignments?.length ?? 0;
 
+      const classesList = $("classesList");
+      classesList.replaceChildren();
+
+      if (!assignments || assignments.length === 0) {
+
+        const empty = document.createElement("div");
+        empty.className = "empty";
+        empty.textContent = "هنوز کلاسی به حساب شما اختصاص داده نشده است.";
+        classesList.appendChild(empty);
+
+      } else {
+
+        assignments.forEach(item => {
+
+          if (!item.classes) return;
+
+          const card = document.createElement("div");
+          card.className = "class-card";
+
+          const icon = document.createElement("div");
+          icon.className = "class-icon";
+          icon.textContent = "🏫";
+
+          const name = document.createElement("div");
+          name.className = "class-name";
+          name.textContent = item.classes.grade;
+
+          const field = document.createElement("div");
+          field.className = "class-field";
+          field.textContent = "رشته: " + item.classes.field;
+
+          card.append(icon, name, field);
+          classesList.appendChild(card);
+
+        });
+
+      }
+
+      // دریافت جلسات معلم
+
+      const { data: sessions, error: sessionsError } =
+        await supabase
+          .from("sessions")
+          .select("id")
+          .eq("teacher_id", userId);
+
+      if (sessionsError) throw sessionsError;
+
       $("sessionsCount").textContent =
-        sessionsCount ?? 0;
+        sessions?.length ?? 0;
+
+      // دریافت تعداد حضورها
+
+      let totalAttendance = 0;
+
+      if (sessions && sessions.length > 0) {
+
+        const sessionIds = sessions.map(item => item.id);
+
+        const { count, error: attendanceError } =
+          await supabase
+            .from("attendance")
+            .select("*", { count: "exact", head: true })
+            .in("session_id", sessionIds);
+
+        if (attendanceError) throw attendanceError;
+
+        totalAttendance = count ?? 0;
+
+      }
 
       $("attendanceCount").textContent =
-        attendanceCount;
+        totalAttendance;
 
     } catch (error) {
 
       $("error").textContent =
-        "دریافت اطلاعات با مشکل مواجه شد.";
+        "خطا در دریافت اطلاعات. لطفاً اتصال سامانه را بررسی کنید.";
 
       console.error(error);
 
@@ -441,11 +469,6 @@
   $("logoutBtn").addEventListener("click", async () => {
     await supabase.auth.signOut();
     location.replace("index.html");
-  });
-
-  $("createSessionBtn").addEventListener("click", () => {
-    $("error").textContent =
-      "بخش ایجاد جلسه هنوز به پایگاه داده متصل نشده است.";
   });
 
   start();
