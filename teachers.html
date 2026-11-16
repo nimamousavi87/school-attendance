@@ -1,1 +1,497 @@
 
+
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#080d18">
+<title>مدیریت معلم‌ها | علم و فن</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ font-family:Tahoma,Arial,sans-serif;
+ background:#080d18;
+ color:#f1f5f9;
+}
+header{
+ background:#101827;
+ border-bottom:1px solid #263247;
+ padding:20px 25px;
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ gap:15px;
+ flex-wrap:wrap;
+}
+header h1{font-size:21px;margin:0 0 8px}
+header p{font-size:12px;color:#94a3b8;margin:0}
+.container{max-width:1150px;margin:auto;padding:25px}
+.top-actions{display:flex;gap:10px;flex-wrap:wrap}
+button,.back{
+ border:0;
+ border-radius:9px;
+ padding:12px 16px;
+ font-family:inherit;
+ cursor:pointer;
+ color:white;
+ background:#26364e;
+ text-decoration:none;
+ font-size:13px;
+}
+.primary{background:#2563eb}
+.danger{background:#991b1b}
+.success{background:#166534}
+button:disabled{opacity:.5;cursor:not-allowed}
+.grid{
+ display:grid;
+ grid-template-columns:repeat(3,minmax(0,1fr));
+ gap:15px;
+ margin-bottom:22px;
+}
+.card{
+ background:#111c2e;
+ border:1px solid #26364e;
+ border-radius:15px;
+ padding:20px;
+ min-width:0;
+}
+.stat-label{font-size:13px;color:#94a3b8;margin-bottom:13px}
+.stat-number{font-size:28px;color:#60a5fa;font-weight:bold}
+h2{font-size:17px;margin:0 0 20px}
+.form-grid{
+ display:grid;
+ grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:15px;
+}
+.field{min-width:0}
+label{
+ display:block;
+ font-size:13px;
+ color:#cbd5e1;
+ margin-bottom:9px;
+}
+input{
+ width:100%;
+ padding:14px;
+ border-radius:9px;
+ border:1px solid #334155;
+ background:#0b1423;
+ color:white;
+ font-family:inherit;
+ outline:none;
+ font-size:14px;
+}
+input:focus{border-color:#3b82f6}
+.full{grid-column:1/-1}
+.hint{
+ font-size:12px;
+ color:#94a3b8;
+ line-height:2;
+ margin:14px 0;
+}
+#message{
+ display:none;
+ padding:13px;
+ border-radius:9px;
+ margin-top:15px;
+ font-size:13px;
+ line-height:2;
+}
+#error{background:#7f1d1d33;color:#fca5a5}
+#success{background:#14532d33;color:#86efac}
+.table-wrap{overflow-x:auto}
+table{
+ width:100%;
+ border-collapse:collapse;
+ min-width:600px;
+ font-size:13px;
+}
+th,td{
+ padding:15px 12px;
+ text-align:right;
+ border-bottom:1px solid #263247;
+}
+th{color:#94a3b8;font-weight:normal}
+td{color:#e2e8f0}
+.status{
+ display:inline-block;
+ padding:6px 10px;
+ border-radius:20px;
+ font-size:11px;
+}
+.active{background:#14532d;color:#86efac}
+.inactive{background:#7f1d1d;color:#fca5a5}
+.empty{
+ text-align:center;
+ padding:30px;
+ color:#94a3b8;
+}
+.actions{display:flex;gap:7px;flex-wrap:wrap}
+.small-btn{padding:8px 11px;font-size:11px}
+@media(max-width:750px){
+ .grid{grid-template-columns:1fr}
+ .form-grid{grid-template-columns:1fr}
+ .container{padding:15px}
+ header{padding:18px}
+ header h1{font-size:18px}
+ .full{grid-column:auto}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+ <div>
+  <h1>👨‍🏫 مدیریت معلم‌ها</h1>
+  <p>هنرستان علم و فن | پنل مدیریت</p>
+ </div>
+ <div class="top-actions">
+  <a class="back" href="admin.html">بازگشت به داشبورد</a>
+  <button id="logoutBtn">خروج</button>
+ </div>
+</header>
+
+<main class="container">
+
+ <section class="grid">
+  <div class="card">
+   <div class="stat-label">کل معلم‌ها</div>
+   <div class="stat-number" id="totalCount">—</div>
+  </div>
+  <div class="card">
+   <div class="stat-label">حساب‌های فعال</div>
+   <div class="stat-number" id="activeCount">—</div>
+  </div>
+  <div class="card">
+   <div class="stat-label">حساب‌های غیرفعال</div>
+   <div class="stat-number" id="inactiveCount">—</div>
+  </div>
+ </section>
+
+ <section class="card" style="margin-bottom:22px">
+  <h2>➕ ثبت معلم جدید</h2>
+
+  <form id="teacherForm">
+   <div class="form-grid">
+
+    <div class="field">
+     <label for="fullName">نام و نام خانوادگی</label>
+     <input
+      id="fullName"
+      type="text"
+      placeholder="مثلاً علی رضایی"
+      minlength="3"
+      maxlength="100"
+      required
+     >
+    </div>
+
+    <div class="field">
+     <label for="username">نام کاربری انگلیسی</label>
+     <input
+      id="username"
+      type="text"
+      placeholder="مثلاً ali_rezaei"
+      minlength="4"
+      maxlength="30"
+      pattern="[a-zA-Z0-9_]{4,30}"
+      autocomplete="off"
+      required
+     >
+    </div>
+
+    <div class="field">
+     <label for="password">رمز اولیه</label>
+     <input
+      id="password"
+      type="password"
+      placeholder="حداقل ۱۰ کاراکتر"
+      minlength="10"
+      autocomplete="new-password"
+      required
+     >
+    </div>
+
+    <div class="field">
+     <label>دسترسی اولیه</label>
+     <input
+      type="text"
+      value="تمام ۱۲ کلاس"
+      disabled
+     >
+    </div>
+
+    <div class="full">
+     <p class="hint">
+      حساب جدید در ابتدا به تمام ۱۲ کلاس دسترسی خواهد داشت.
+      رمز اولیه را به‌صورت امن به معلم تحویل بده و از ارسال آن در گروه‌های عمومی خودداری کن.
+     </p>
+     <button class="primary" id="createBtn" type="submit">
+      ثبت حساب معلم
+     </button>
+    </div>
+
+   </div>
+  </form>
+
+  <div id="message"></div>
+ </section>
+
+ <section class="card">
+  <h2>📋 فهرست معلم‌ها</h2>
+
+  <div class="table-wrap">
+   <table>
+    <thead>
+     <tr>
+      <th>ردیف</th>
+      <th>نام معلم</th>
+      <th>نام کاربری</th>
+      <th>وضعیت</th>
+      <th>عملیات</th>
+     </tr>
+    </thead>
+    <tbody id="teachersTable">
+     <tr><td colspan="5" class="empty">در حال دریافت اطلاعات...</td></tr>
+    </tbody>
+   </table>
+  </div>
+
+  <button id="refreshBtn" style="margin-top:18px">
+   🔄 بروزرسانی فهرست
+  </button>
+ </section>
+
+</main>
+
+<script type="module">
+import { createClient } from
+ "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+const SUPABASE_URL =
+ "https://tmogtldkiyxzdvercwro.supabase.co";
+
+const SUPABASE_KEY =
+ "sb_publishable_LMwuOofGL2VvLX1eE47czA_QLzYb1lU";
+
+const supabase = createClient(
+ SUPABASE_URL,
+ SUPABASE_KEY
+);
+
+const $ = id => document.getElementById(id);
+
+let currentTeachers = [];
+
+function showMessage(text,type){
+ const box=$("message");
+ box.style.display="block";
+ box.id=type;
+ box.textContent=text;
+}
+
+function clearMessage(){
+ const box=$("message");
+ box.style.display="none";
+ box.id="message";
+ box.textContent="";
+}
+
+async function checkAdmin(){
+ const {data,error}=await supabase.auth.getUser();
+
+ if(error || !data.user){
+  location.replace("index.html");
+  return false;
+ }
+
+ const {data:profile,error:profileError}=await supabase
+  .from("profiles")
+  .select("role,is_active")
+  .eq("id",data.user.id)
+  .single();
+
+ if(
+  profileError ||
+  !profile ||
+  profile.role!=="admin" ||
+  profile.is_active!==true
+ ){
+  await supabase.auth.signOut();
+  location.replace("index.html");
+  return false;
+ }
+
+ return true;
+}
+
+async function loadTeachers(){
+ $("teachersTable").innerHTML=
+  '<tr><td colspan="5" class="empty">در حال دریافت اطلاعات...</td></tr>';
+
+ const {data,error}=await supabase
+  .from("profiles")
+  .select("id,full_name,username,is_active")
+  .eq("role","teacher")
+  .order("full_name");
+
+ if(error){
+  $("teachersTable").innerHTML=
+   '<tr><td colspan="5" class="empty">خطا در دریافت فهرست معلم‌ها</td></tr>';
+  showMessage("دریافت اطلاعات ناموفق بود: "+error.message,"error");
+  return;
+ }
+
+ currentTeachers=data || [];
+
+ const total=currentTeachers.length;
+ const active=currentTeachers.filter(t=>t.is_active).length;
+
+ $("totalCount").textContent=total;
+ $("activeCount").textContent=active;
+ $("inactiveCount").textContent=total-active;
+
+ if(total===0){
+  $("teachersTable").innerHTML=
+   '<tr><td colspan="5" class="empty">هنوز معلمی ثبت نشده است.</td></tr>';
+  return;
+ }
+
+ $("teachersTable").innerHTML="";
+
+ currentTeachers.forEach((teacher,index)=>{
+  const tr=document.createElement("tr");
+
+  const values=[
+   index+1,
+   teacher.full_name,
+   teacher.username || "—"
+  ];
+
+  values.forEach(value=>{
+   const td=document.createElement("td");
+   td.textContent=value;
+   tr.appendChild(td);
+  });
+
+  const statusTd=document.createElement("td");
+  const badge=document.createElement("span");
+  badge.className="status "+(teacher.is_active?"active":"inactive");
+  badge.textContent=teacher.is_active?"فعال":"غیرفعال";
+  statusTd.appendChild(badge);
+  tr.appendChild(statusTd);
+
+  const actionTd=document.createElement("td");
+  const actionBox=document.createElement("div");
+  actionBox.className="actions";
+
+  const toggle=document.createElement("button");
+  toggle.className="small-btn "+(teacher.is_active?"danger":"success");
+  toggle.textContent=teacher.is_active?"غیرفعال کردن":"فعال کردن";
+
+  toggle.addEventListener("click",()=>{
+   toggleTeacher(teacher.id,teacher.is_active);
+  });
+
+  actionBox.appendChild(toggle);
+  actionTd.appendChild(actionBox);
+  tr.appendChild(actionTd);
+
+  $("teachersTable").appendChild(tr);
+ });
+}
+
+async function toggleTeacher(id,isActive){
+ const action=isActive?"غیرفعال کردن":"فعال کردن";
+
+ if(!confirm("آیا از "+action+" این حساب مطمئن هستید؟")) return;
+
+ const {error}=await supabase
+  .from("profiles")
+  .update({is_active:!isActive})
+  .eq("id",id)
+  .eq("role","teacher");
+
+ if(error){
+  showMessage("تغییر وضعیت انجام نشد: "+error.message,"error");
+  return;
+ }
+
+ clearMessage();
+ await loadTeachers();
+ showMessage("وضعیت حساب با موفقیت تغییر کرد.","success");
+}
+
+$("teacherForm").addEventListener("submit",async event=>{
+ event.preventDefault();
+ clearMessage();
+
+ const full_name=$("fullName").value.trim();
+ const username=$("username").value.trim().toLowerCase();
+ const password=$("password").value;
+
+ if(!/^[a-z0-9_]{4,30}$/.test(username)){
+  showMessage("نام کاربری باید ۴ تا ۳۰ کاراکتر انگلیسی، عدد یا _ باشد.","error");
+  return;
+ }
+
+ if(password.length<10){
+  showMessage("رمز اولیه باید حداقل ۱۰ کاراکتر باشد.","error");
+  return;
+ }
+
+ $("createBtn").disabled=true;
+ $("createBtn").textContent="در حال ثبت...";
+
+ try{
+  const {data,error}=await supabase.functions.invoke(
+   "create-teacher",
+   {
+    body:{
+     full_name,
+     username,
+     password
+    }
+   }
+  );
+
+  if(error){
+   throw new Error("ارتباط با سرور ناموفق بود. وضعیت تابع را بررسی کن.");
+  }
+
+  if(!data || !data.success){
+   throw new Error(data?.error || "ساخت حساب معلم ناموفق بود.");
+  }
+
+  $("teacherForm").reset();
+  showMessage("حساب معلم با موفقیت ساخته شد.","success");
+  await loadTeachers();
+
+ }catch(error){
+  showMessage(error.message || "خطای نامشخص","error");
+ }finally{
+  $("createBtn").disabled=false;
+  $("createBtn").textContent="ثبت حساب معلم";
+ }
+});
+
+$("refreshBtn").addEventListener("click",loadTeachers);
+
+$("logoutBtn").addEventListener("click",async()=>{
+ await supabase.auth.signOut();
+ location.replace("index.html");
+});
+
+const allowed=await checkAdmin();
+
+if(allowed){
+ await loadTeachers();
+}
+</script>
+
+</body>
+</html>
