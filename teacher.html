@@ -7,15 +7,19 @@
   <meta name="theme-color" content="#080d18">
   <title>پنل معلم | علم و فن</title>
 
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
   <style>
     * { box-sizing: border-box; }
 
     body {
       margin: 0;
-      font-family: Tahoma, Arial, sans-serif;
+      font-family: Vazirmatn, Tahoma, sans-serif;
       background: #080d18;
       color: #f1f5f9;
     }
+
+    button, input, select { font: inherit; }
 
     .layout { display: flex; min-height: 100vh; }
 
@@ -27,7 +31,7 @@
       flex-shrink: 0;
     }
 
-    .brand { font-size: 20px; font-weight: bold; }
+    .brand { font-size: 20px; font-weight: 800; }
 
     .school {
       color: #94a3b8;
@@ -146,25 +150,77 @@
 
     .empty {
       text-align: center;
-      padding: 30px 15px;
+      padding: 25px 15px;
       color: #94a3b8;
       line-height: 2;
       font-size: 14px;
     }
 
-    .section-card { margin-top: 25px; }
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+
+    .form-group { min-width: 0; }
+
+    label {
+      display: block;
+      color: #cbd5e1;
+      font-size: 13px;
+      margin-bottom: 9px;
+    }
+
+    input, select {
+      width: 100%;
+      height: 48px;
+      border-radius: 10px;
+      border: 1px solid #34445e;
+      background: #0b1423;
+      color: white;
+      padding: 0 12px;
+      outline: none;
+    }
+
+    input:focus, select:focus {
+      border-color: #3b82f6;
+    }
+
+    select option {
+      background: #101827;
+      color: white;
+    }
 
     button {
-      font-family: inherit;
       border: 0;
       padding: 12px 17px;
       border-radius: 9px;
       color: white;
       background: #26364e;
       cursor: pointer;
+      transition: .2s;
     }
 
-    button:hover { background: #365477; }
+    button:hover { filter: brightness(1.15); }
+
+    button:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+    }
+
+    .primary-btn {
+      background: linear-gradient(135deg, #2563eb, #4f46e5);
+      font-weight: 700;
+    }
+
+    .success-btn { background: #087a58; }
+    .danger-btn { background: #9f3346; }
+
+    .create-btn {
+      width: 100%;
+      margin-top: 18px;
+      min-height: 48px;
+    }
 
     .notice {
       background: #17263a;
@@ -176,10 +232,94 @@
       margin-top: 15px;
     }
 
-    #error {
-      color: #fca5a5;
+    .sessions-list {
+      display: grid;
+      gap: 13px;
+    }
+
+    .session-card {
+      background: #17263a;
+      border: 1px solid #2b405d;
+      padding: 17px;
+      border-radius: 12px;
+    }
+
+    .session-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .session-title {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .session-meta {
+      color: #94a3b8;
+      font-size: 12px;
+      line-height: 2;
+    }
+
+    .status {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+    }
+
+    .status.open {
+      background: #064e3b;
+      color: #a7f3d0;
+    }
+
+    .status.closed {
+      background: #45202a;
+      color: #fecdd3;
+    }
+
+    .session-link {
+      margin-top: 14px;
+      padding: 11px;
+      background: #0b1423;
+      border: 1px solid #30425e;
+      border-radius: 9px;
+      color: #93c5fd;
+      font-size: 12px;
+      direction: ltr;
+      text-align: left;
+      overflow-wrap: anywhere;
+      line-height: 1.8;
+    }
+
+    .session-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin-top: 13px;
+    }
+
+    .session-actions button {
+      font-size: 12px;
+    }
+
+    #error, #formMessage {
       font-size: 13px;
-      margin-top: 12px;
+      margin-top: 13px;
+      line-height: 1.9;
+    }
+
+    .error-text { color: #fca5a5; }
+    .success-text { color: #86efac; }
+
+    .footer-note {
+      color: #64748b;
+      font-size: 11px;
+      margin-top: 20px;
+      line-height: 2;
     }
 
     @media (max-width: 900px) {
@@ -204,6 +344,8 @@
       .stats, .classes-grid { gap: 10px; }
 
       .card { padding: 16px; }
+
+      .form-grid { grid-template-columns: 1fr; }
     }
 
     @media (max-width: 360px) {
@@ -226,6 +368,7 @@
 
     <a class="menu-item active" href="teacher.html">🏠 داشبورد</a>
     <a class="menu-item" href="#classes">🏫 کلاس‌های من</a>
+    <a class="menu-item" href="#createSession">➕ ایجاد جلسه</a>
     <a class="menu-item" href="#sessions">📋 جلسات حضور و غیاب</a>
     <a class="menu-item" href="#reports">📊 گزارش‌ها</a>
 
@@ -275,26 +418,74 @@
       </div>
     </section>
 
-    <section class="section card" id="sessions">
-      <h2>📋 جلسات حضور و غیاب</h2>
+    <section class="section card" id="createSession">
+      <h2>➕ ایجاد جلسه حضور و غیاب</h2>
 
-      <div class="empty">
-        هنوز جلسه‌ای برای نمایش وجود ندارد.
-      </div>
+      <form id="createForm">
+
+        <div class="form-grid">
+
+          <div class="form-group">
+            <label for="classSelect">انتخاب کلاس</label>
+            <select id="classSelect" required>
+              <option value="">در حال دریافت کلاس‌ها...</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="sessionTitle">عنوان جلسه</label>
+            <input
+              id="sessionTitle"
+              type="text"
+              placeholder="مثلاً حضور و غیاب زنگ اول"
+              minlength="2"
+              maxlength="100"
+              required
+            >
+          </div>
+
+        </div>
+
+        <button
+          type="submit"
+          class="primary-btn create-btn"
+          id="createBtn"
+          disabled
+        >
+          ایجاد جلسه و دریافت لینک
+        </button>
+
+        <div id="formMessage"></div>
+
+      </form>
 
       <div class="notice">
-        در مرحله بعد امکان ایجاد جلسه و دریافت لینک اختصاصی حضور و غیاب فعال می‌شود.
+        پس از ایجاد جلسه، لینک اختصاصی در همین صفحه نمایش داده می‌شود.
+        دانش‌آموزان با باز کردن لینک می‌توانند حضور خود را ثبت کنند.
+        جلسه تا زمان بستن توسط معلم باز می‌ماند.
+      </div>
+    </section>
+
+    <section class="section card" id="sessions">
+      <h2>📋 جلسات حضور و غیاب من</h2>
+
+      <div id="sessionsList" class="sessions-list">
+        <div class="empty">در حال دریافت جلسات...</div>
       </div>
     </section>
 
     <section class="section card" id="reports">
       <h2>📊 گزارش‌ها</h2>
       <div class="empty">
-        گزارش حضور و غیاب پس از تکمیل بخش جلسات نمایش داده خواهد شد.
+        گزارش‌های تکمیلی پس از توسعه بخش گزارش‌گیری فعال می‌شوند.
       </div>
     </section>
 
     <div id="error"></div>
+
+    <div class="footer-note">
+      هنرستان علم و فن | سامانه مدیریت حضور و غیاب
+    </div>
 
   </main>
 
@@ -318,6 +509,407 @@
 
   const $ = id => document.getElementById(id);
 
+  let currentUserId = null;
+  let assignedClasses = [];
+
+  function showFormMessage(text, type = "error") {
+    const element = $("formMessage");
+    element.textContent = text;
+    element.className =
+      type === "success" ? "success-text" : "error-text";
+  }
+
+  function formatDate(value) {
+    if (!value) return "نامشخص";
+
+    return new Date(value).toLocaleString("fa-IR", {
+      dateStyle: "short",
+      timeStyle: "short"
+    });
+  }
+
+  function createElement(tag, className, text) {
+    const element = document.createElement(tag);
+
+    if (className) element.className = className;
+    if (text !== undefined) element.textContent = text;
+
+    return element;
+  }
+
+  async function loadClasses() {
+
+    const { data, error } = await supabase
+      .from("teacher_classes")
+      .select(`
+        class_id,
+        classes (
+          id,
+          grade,
+          field
+        )
+      `)
+      .eq("teacher_id", currentUserId);
+
+    if (error) throw error;
+
+    assignedClasses = (data || [])
+      .filter(item => item.classes)
+      .map(item => item.classes);
+
+    $("classesCount").textContent = assignedClasses.length;
+
+    const list = $("classesList");
+    const select = $("classSelect");
+
+    list.replaceChildren();
+    select.replaceChildren();
+
+    if (assignedClasses.length === 0) {
+
+      list.appendChild(
+        createElement(
+          "div",
+          "empty",
+          "هنوز کلاسی به حساب شما اختصاص داده نشده است."
+        )
+      );
+
+      select.appendChild(
+        createElement("option", "", "کلاسی وجود ندارد")
+      );
+
+      return;
+    }
+
+    select.appendChild(
+      createElement("option", "", "یک کلاس انتخاب کنید")
+    );
+
+    assignedClasses.forEach(item => {
+
+      const option = createElement(
+        "option",
+        "",
+        item.grade + " - " + item.field
+      );
+
+      option.value = item.id;
+      select.appendChild(option);
+
+      const card = createElement("div", "class-card");
+
+      card.appendChild(
+        createElement("div", "class-icon", "🏫")
+      );
+
+      card.appendChild(
+        createElement("div", "class-name", item.grade)
+      );
+
+      card.appendChild(
+        createElement("div", "class-field", "رشته: " + item.field)
+      );
+
+      list.appendChild(card);
+
+    });
+
+    $("createBtn").disabled = false;
+  }
+
+  async function loadSessions() {
+
+    const { data, error } = await supabase
+      .from("sessions")
+      .select(`
+        id,
+        title,
+        status,
+        access_token,
+        class_id,
+        created_at,
+        classes (
+          grade,
+          field
+        )
+      `)
+      .eq("teacher_id", currentUserId)
+      .order("created_at", { ascending: false });
+
+    if (error) throw error;
+
+    const sessions = data || [];
+
+    $("sessionsCount").textContent = sessions.length;
+
+    const list = $("sessionsList");
+    list.replaceChildren();
+
+    if (sessions.length === 0) {
+      list.appendChild(
+        createElement(
+          "div",
+          "empty",
+          "هنوز جلسه‌ای ایجاد نشده است."
+        )
+      );
+
+      return;
+    }
+
+    sessions.forEach(session => {
+
+      const card = createElement("div", "session-card");
+
+      const top = createElement("div", "session-top");
+      const info = createElement("div");
+
+      info.appendChild(
+        createElement(
+          "div",
+          "session-title",
+          session.title || "جلسه بدون عنوان"
+        )
+      );
+
+      const classInfo = Array.isArray(session.classes)
+        ? session.classes[0]
+        : session.classes;
+
+      info.appendChild(
+        createElement(
+          "div",
+          "session-meta",
+          classInfo
+            ? classInfo.grade + " - " + classInfo.field
+            : "کلاس نامشخص"
+        )
+      );
+
+      info.appendChild(
+        createElement(
+          "div",
+          "session-meta",
+          "تاریخ ایجاد: " + formatDate(session.created_at)
+        )
+      );
+
+      const status = createElement(
+        "span",
+        "status " + (session.status === "open" ? "open" : "closed"),
+        session.status === "open" ? "باز" : "بسته"
+      );
+
+      top.append(info, status);
+      card.appendChild(top);
+
+      const attendanceUrl = new URL(
+        "attendance.html",
+        window.location.href
+      );
+
+      attendanceUrl.searchParams.set(
+        "token",
+        session.access_token
+      );
+
+      const link = createElement(
+        "div",
+        "session-link",
+        attendanceUrl.href
+      );
+
+      card.appendChild(link);
+
+      const actions = createElement("div", "session-actions");
+
+      const copyButton = createElement(
+        "button",
+        "success-btn",
+        "📋 کپی لینک"
+      );
+
+      copyButton.addEventListener("click", async () => {
+
+        try {
+          await navigator.clipboard.writeText(attendanceUrl.href);
+
+          copyButton.textContent = "کپی شد ✓";
+
+          setTimeout(() => {
+            copyButton.textContent = "📋 کپی لینک";
+          }, 1800);
+
+        } catch {
+          window.prompt("لینک جلسه را کپی کنید:", attendanceUrl.href);
+        }
+
+      });
+
+      actions.appendChild(copyButton);
+
+      if (session.status === "open") {
+
+        const closeButton = createElement(
+          "button",
+          "danger-btn",
+          "بستن جلسه"
+        );
+
+        closeButton.addEventListener("click", async () => {
+
+          const confirmed = window.confirm(
+            "آیا مطمئن هستید که می‌خواهید این جلسه را ببندید؟ پس از بستن، دانش‌آموزان دیگر نمی‌توانند حضور ثبت کنند."
+          );
+
+          if (!confirmed) return;
+
+          closeButton.disabled = true;
+          closeButton.textContent = "در حال بستن...";
+
+          const { error: updateError } = await supabase
+            .from("sessions")
+            .update({ status: "closed" })
+            .eq("id", session.id)
+            .eq("teacher_id", currentUserId);
+
+          if (updateError) {
+
+            alert("بستن جلسه انجام نشد. لطفاً دوباره تلاش کنید.");
+
+            closeButton.disabled = false;
+            closeButton.textContent = "بستن جلسه";
+
+            console.error(updateError);
+            return;
+          }
+
+          await loadSessions();
+
+        });
+
+        actions.appendChild(closeButton);
+      }
+
+      card.appendChild(actions);
+      list.appendChild(card);
+
+    });
+
+  }
+
+  async function loadAttendanceCount() {
+
+    const { count, error } = await supabase
+      .from("attendance")
+      .select("*", { count: "exact", head: true });
+
+    if (error) throw error;
+
+    $("attendanceCount").textContent = count ?? 0;
+  }
+
+  async function createSession(event) {
+
+    event.preventDefault();
+
+    const classId = $("classSelect").value;
+    const title = $("sessionTitle").value.trim();
+
+    if (!classId || !title) {
+      showFormMessage("لطفاً کلاس و عنوان جلسه را وارد کنید.");
+      return;
+    }
+
+    const allowed = assignedClasses.some(
+      item => item.id === classId
+    );
+
+    if (!allowed) {
+      showFormMessage("این کلاس به حساب شما اختصاص داده نشده است.");
+      return;
+    }
+
+    const button = $("createBtn");
+
+    button.disabled = true;
+    button.textContent = "در حال ایجاد جلسه...";
+
+    showFormMessage("");
+
+    try {
+
+      const { data, error } = await supabase
+        .from("sessions")
+        .insert({
+          teacher_id: currentUserId,
+          class_id: classId,
+          title: title,
+          status: "open"
+        })
+        .select(`
+          id,
+          access_token,
+          title,
+          status
+        `)
+        .single();
+
+      if (error) throw error;
+
+      $("sessionTitle").value = "";
+
+      showFormMessage(
+        "جلسه با موفقیت ایجاد شد. لینک اختصاصی آماده است.",
+        "success"
+      );
+
+      await loadSessions();
+      await loadAttendanceCount();
+
+      const newUrl = new URL(
+        "attendance.html",
+        window.location.href
+      );
+
+      newUrl.searchParams.set("token", data.access_token);
+
+      try {
+        await navigator.clipboard.writeText(newUrl.href);
+        showFormMessage(
+          "جلسه ساخته شد و لینک آن هم کپی شد.",
+          "success"
+        );
+      } catch {
+        showFormMessage(
+          "جلسه ساخته شد. برای دریافت لینک، از بخش جلسات روی کپی لینک بزنید.",
+          "success"
+        );
+      }
+
+      $("sessions").scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+
+    } catch (error) {
+
+      console.error(error);
+
+      showFormMessage(
+        "ایجاد جلسه انجام نشد. دسترسی دیتابیس و اتصال را بررسی کنید."
+      );
+
+    } finally {
+
+      button.disabled = assignedClasses.length === 0;
+      button.textContent = "ایجاد جلسه و دریافت لینک";
+
+    }
+
+  }
+
   async function start() {
 
     try {
@@ -338,13 +930,13 @@
         return;
       }
 
-      const userId = userData.user.id;
+      currentUserId = userData.user.id;
 
       const { data: profile, error: profileError } =
         await supabase
           .from("profiles")
-          .select("full_name, role, is_active")
-          .eq("id", userId)
+          .select("full_name, role, is_active, must_change_password")
+          .eq("id", currentUserId)
           .single();
 
       if (
@@ -361,99 +953,9 @@
       $("teacherName").textContent =
         "معلم: " + profile.full_name;
 
-      // دریافت کلاس‌های اختصاص‌یافته به معلم
-
-      const { data: assignments, error: classesError } =
-        await supabase
-          .from("teacher_classes")
-          .select(`
-            class_id,
-            classes (
-              id,
-              grade,
-              field
-            )
-          `)
-          .eq("teacher_id", userId);
-
-      if (classesError) throw classesError;
-
-      $("classesCount").textContent =
-        assignments?.length ?? 0;
-
-      const classesList = $("classesList");
-      classesList.replaceChildren();
-
-      if (!assignments || assignments.length === 0) {
-
-        const empty = document.createElement("div");
-        empty.className = "empty";
-        empty.textContent = "هنوز کلاسی به حساب شما اختصاص داده نشده است.";
-        classesList.appendChild(empty);
-
-      } else {
-
-        assignments.forEach(item => {
-
-          if (!item.classes) return;
-
-          const card = document.createElement("div");
-          card.className = "class-card";
-
-          const icon = document.createElement("div");
-          icon.className = "class-icon";
-          icon.textContent = "🏫";
-
-          const name = document.createElement("div");
-          name.className = "class-name";
-          name.textContent = item.classes.grade;
-
-          const field = document.createElement("div");
-          field.className = "class-field";
-          field.textContent = "رشته: " + item.classes.field;
-
-          card.append(icon, name, field);
-          classesList.appendChild(card);
-
-        });
-
-      }
-
-      // دریافت جلسات معلم
-
-      const { data: sessions, error: sessionsError } =
-        await supabase
-          .from("sessions")
-          .select("id")
-          .eq("teacher_id", userId);
-
-      if (sessionsError) throw sessionsError;
-
-      $("sessionsCount").textContent =
-        sessions?.length ?? 0;
-
-      // دریافت تعداد حضورها
-
-      let totalAttendance = 0;
-
-      if (sessions && sessions.length > 0) {
-
-        const sessionIds = sessions.map(item => item.id);
-
-        const { count, error: attendanceError } =
-          await supabase
-            .from("attendance")
-            .select("*", { count: "exact", head: true })
-            .in("session_id", sessionIds);
-
-        if (attendanceError) throw attendanceError;
-
-        totalAttendance = count ?? 0;
-
-      }
-
-      $("attendanceCount").textContent =
-        totalAttendance;
+      await loadClasses();
+      await loadSessions();
+      await loadAttendanceCount();
 
     } catch (error) {
 
@@ -465,6 +967,8 @@
     }
 
   }
+
+  $("createForm").addEventListener("submit", createSession);
 
   $("logoutBtn").addEventListener("click", async () => {
     await supabase.auth.signOut();
