@@ -9,9 +9,7 @@
   <title>ورود به سامانه | علم و فن</title>
 
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -123,14 +121,8 @@
       transition: 0.2s;
     }
 
-    button:hover {
-      filter: brightness(1.12);
-    }
-
-    button:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
+    button:hover { filter: brightness(1.12); }
+    button:disabled { opacity: 0.6; cursor: not-allowed; }
 
     #message {
       display: none;
@@ -164,13 +156,8 @@
     }
 
     @media (max-width: 480px) {
-      .login-box {
-        padding: 25px 20px;
-      }
-
-      .logo h1 {
-        font-size: 22px;
-      }
+      .login-box { padding: 25px 20px; }
+      .logo h1 { font-size: 22px; }
     }
   </style>
 </head>
@@ -266,8 +253,8 @@
         : "ورود به سامانه";
     }
 
-    // بررسی نشست قبلی مدیر
     async function checkExistingSession() {
+
       const { data } = await supabase.auth.getSession();
 
       if (!data.session) return;
@@ -283,21 +270,27 @@
         .eq("id", userData.user.id)
         .single();
 
-      if (
-        !error &&
-        profile &&
-        profile.role === "admin" &&
-        profile.is_active === true
-      ) {
-        window.location.replace("admin.html");
+      if (error || !profile || profile.is_active !== true) {
+        await supabase.auth.signOut();
+        return;
+      }
+
+      if (profile.role === "admin") {
+        location.replace("admin.html");
+      } else if (profile.role === "teacher") {
+        location.replace("teacher.html");
+      } else {
+        await supabase.auth.signOut();
       }
     }
 
-    // ورود کاربر
     form.addEventListener("submit", async (event) => {
+
       event.preventDefault();
 
-      const username = usernameInput.value.trim().toLowerCase();
+      const username =
+        usernameInput.value.trim().toLowerCase();
+
       const password = passwordInput.value;
 
       if (!username || !password) {
@@ -310,7 +303,6 @@
 
       setLoading(true);
       message.className = "";
-      message.style.display = "none";
 
       try {
 
@@ -318,8 +310,8 @@
           "login-with-username",
           {
             body: {
-              username: username,
-              password: password
+              username,
+              password
             }
           }
         );
@@ -330,10 +322,27 @@
           );
         }
 
-        if (!data || !data.success || !data.session || !data.profile) {
+        if (
+          !data ||
+          !data.success ||
+          !data.session ||
+          !data.profile
+        ) {
           throw new Error(
-            data?.error || "نام کاربری یا رمز عبور اشتباه است."
+            data?.error ||
+            "نام کاربری یا رمز عبور اشتباه است."
           );
+        }
+
+        if (data.profile.is_active === false) {
+          throw new Error("حساب کاربری شما غیرفعال است.");
+        }
+
+        if (
+          data.profile.role !== "admin" &&
+          data.profile.role !== "teacher"
+        ) {
+          throw new Error("نقش کاربری معتبر نیست.");
         }
 
         const { error: sessionError } =
@@ -344,35 +353,20 @@
 
         if (sessionError) {
           throw new Error(
-            "ورود انجام شد اما ایجاد نشست ناموفق بود."
+            "ایجاد نشست ورود ناموفق بود."
           );
         }
+
+        showMessage(
+          "ورود موفق بود. در حال انتقال...",
+          "success"
+        );
 
         if (data.profile.role === "admin") {
-
-          showMessage(
-            "ورود موفق بود. در حال انتقال به داشبورد...",
-            "success"
-          );
-
-          window.location.replace("admin.html");
-          return;
-
+          location.replace("admin.html");
+        } else {
+          location.replace("teacher.html");
         }
-
-        if (data.profile.role === "teacher") {
-
-          await supabase.auth.signOut();
-
-          throw new Error(
-            "ورود معلم انجام شد، اما پنل معلم هنوز آماده نیست."
-          );
-
-        }
-
-        await supabase.auth.signOut();
-
-        throw new Error("نقش کاربری معتبر نیست.");
 
       } catch (error) {
 
@@ -384,6 +378,7 @@
       } finally {
         setLoading(false);
       }
+
     });
 
     checkExistingSession();
