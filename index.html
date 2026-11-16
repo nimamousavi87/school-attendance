@@ -5,112 +5,122 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#080d18">
-  <meta name="description" content="سامانه هوشمند حضور و غیاب هنرستان علم و فن">
-  <title>ورود | هنرستان علم و فن</title>
+  <meta name="description" content="سامانه حضور و غیاب هنرستان علم و فن">
+  <title>ورود به سامانه | علم و فن</title>
 
   <style>
     * {
       box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: Tahoma, Arial, sans-serif;
     }
 
     body {
+      margin: 0;
       min-height: 100vh;
-      background:
-        radial-gradient(circle at 15% 15%, #15366b55, transparent 35%),
-        radial-gradient(circle at 85% 85%, #164e6355, transparent 35%),
-        #080d18;
-      color: #f1f5f9;
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 20px;
+      font-family: Tahoma, Arial, sans-serif;
+      background:
+        radial-gradient(circle at top right, #17345c 0, transparent 40%),
+        radial-gradient(circle at bottom left, #102b43 0, transparent 35%),
+        #080d18;
+      color: #f8fafc;
     }
 
-    .login-card {
+    .container {
       width: 100%;
       max-width: 430px;
-      padding: 38px 30px;
-      background: #111a2b;
-      border: 1px solid #263c5c;
-      border-radius: 24px;
-      box-shadow: 0 25px 80px #0008;
     }
 
     .logo {
-      width: 76px;
-      height: 76px;
-      display: grid;
-      place-items: center;
-      margin: 0 auto 22px;
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .logo-icon {
+      width: 72px;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 15px;
       border-radius: 22px;
       background: linear-gradient(135deg, #2563eb, #0ea5e9);
-      font-size: 35px;
+      font-size: 30px;
+      box-shadow: 0 10px 35px #2563eb44;
     }
 
-    h1 {
-      text-align: center;
-      font-size: 24px;
-      margin-bottom: 10px;
+    .logo h1 {
+      font-size: 25px;
+      margin: 0 0 10px;
     }
 
-    .subtitle {
+    .logo p {
       color: #94a3b8;
-      text-align: center;
+      font-size: 13px;
+      margin: 0;
+    }
+
+    .login-box {
+      background: rgba(17, 28, 46, 0.94);
+      border: 1px solid #26364e;
+      border-radius: 20px;
+      padding: 30px 25px;
+      box-shadow: 0 20px 60px #0005;
+    }
+
+    .login-box h2 {
+      font-size: 19px;
+      margin: 0 0 10px;
+    }
+
+    .description {
+      color: #94a3b8;
       font-size: 13px;
       line-height: 2;
-      margin-bottom: 30px;
-    }
-
-    .section-title {
-      font-size: 16px;
-      margin-bottom: 22px;
-      text-align: center;
+      margin-bottom: 25px;
     }
 
     label {
       display: block;
       font-size: 13px;
+      margin-bottom: 10px;
       color: #cbd5e1;
-      margin: 19px 0 9px;
     }
 
     input {
       width: 100%;
-      min-height: 48px;
-      padding: 14px;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 11px;
       border: 1px solid #334155;
-      border-radius: 12px;
-      background: #0b1220;
-      color: white;
       outline: none;
+      background: #0b1423;
+      color: white;
+      font-family: inherit;
       font-size: 14px;
+      direction: ltr;
+      text-align: left;
     }
 
     input:focus {
       border-color: #3b82f6;
-      box-shadow: 0 0 0 3px #2563eb22;
-    }
-
-    input::placeholder {
-      color: #64748b;
+      box-shadow: 0 0 0 3px #3b82f622;
     }
 
     button {
       width: 100%;
-      min-height: 49px;
-      padding: 14px;
-      margin-top: 25px;
-      border: 0;
-      border-radius: 12px;
-      background: linear-gradient(135deg, #2563eb, #0ea5e9);
+      padding: 15px;
+      border: none;
+      border-radius: 11px;
+      background: linear-gradient(135deg, #2563eb, #0284c7);
       color: white;
+      font-family: inherit;
       font-size: 15px;
       font-weight: bold;
       cursor: pointer;
-      transition: .2s;
+      transition: 0.2s;
     }
 
     button:hover {
@@ -118,61 +128,48 @@
     }
 
     button:disabled {
-      opacity: .6;
-      cursor: wait;
+      opacity: 0.6;
+      cursor: not-allowed;
     }
 
-    .message {
+    #message {
       display: none;
       margin-top: 18px;
       padding: 13px;
       border-radius: 10px;
-      font-size: 13px;
-      line-height: 1.9;
+      font-size: 12px;
+      line-height: 2;
       text-align: center;
-      overflow-wrap: anywhere;
     }
 
-    .error {
+    #message.error {
       display: block;
-      color: #fecaca;
-      background: #7f1d1d44;
-      border: 1px solid #991b1b;
+      background: #7f1d1d33;
+      color: #fca5a5;
+      border: 1px solid #991b1b66;
     }
 
-    .success {
+    #message.success {
       display: block;
-      color: #bbf7d0;
-      background: #14532d44;
-      border: 1px solid #166534;
+      background: #14532d33;
+      color: #86efac;
+      border: 1px solid #16653466;
     }
 
     .footer {
-      margin-top: 27px;
+      text-align: center;
+      margin-top: 22px;
       color: #64748b;
       font-size: 11px;
-      text-align: center;
-      line-height: 2;
     }
 
     @media (max-width: 480px) {
-      body {
-        padding: 14px;
+      .login-box {
+        padding: 25px 20px;
       }
 
-      .login-card {
-        padding: 30px 21px;
-        border-radius: 19px;
-      }
-
-      h1 {
-        font-size: 21px;
-      }
-    }
-
-    @media (max-height: 600px) {
-      body {
-        align-items: flex-start;
+      .logo h1 {
+        font-size: 22px;
       }
     }
   </style>
@@ -180,55 +177,63 @@
 
 <body>
 
-  <main class="login-card">
+  <div class="container">
 
-    <div class="logo">🏫</div>
-
-    <h1>هنرستان علم و فن</h1>
-
-    <p class="subtitle">
-      سامانه هوشمند مدیریت حضور و غیاب دانش‌آموزان
-    </p>
-
-    <h2 class="section-title">ورود به حساب کاربری</h2>
-
-    <form id="loginForm">
-
-      <label for="username">نام کاربری</label>
-      <input
-        id="username"
-        type="text"
-        placeholder="نام کاربری خود را وارد کنید"
-        autocomplete="username"
-        required
-      >
-
-      <label for="password">رمز عبور</label>
-      <input
-        id="password"
-        type="password"
-        placeholder="رمز عبور خود را وارد کنید"
-        autocomplete="current-password"
-        required
-      >
-
-      <button id="loginButton" type="submit">
-        ورود به سامانه
-      </button>
-
-    </form>
-
-    <div id="message" class="message" role="status"></div>
-
-    <div class="footer">
-      هنرستان علم و فن
-      <br>
-      سامانه اختصاصی مدیریت آموزشی و حضور و غیاب
+    <div class="logo">
+      <div class="logo-icon">🏫</div>
+      <h1>هنرستان علم و فن</h1>
+      <p>سامانه هوشمند حضور و غیاب</p>
     </div>
 
-  </main>
+    <div class="login-box">
+
+      <h2>ورود به حساب کاربری</h2>
+
+      <div class="description">
+        برای ورود به سامانه، نام کاربری و رمز عبور خود را وارد کنید.
+      </div>
+
+      <form id="loginForm">
+
+        <label for="username">نام کاربری</label>
+        <input
+          type="text"
+          id="username"
+          placeholder="نام کاربری خود را وارد کنید"
+          autocomplete="username"
+          autocapitalize="none"
+          required
+          minlength="4"
+          maxlength="30"
+        >
+
+        <label for="password">رمز عبور</label>
+        <input
+          type="password"
+          id="password"
+          placeholder="رمز عبور خود را وارد کنید"
+          autocomplete="current-password"
+          required
+        >
+
+        <button type="submit" id="loginBtn">
+          ورود به سامانه
+        </button>
+
+      </form>
+
+      <div id="message"></div>
+
+    </div>
+
+    <div class="footer">
+      © هنرستان علم و فن | تمامی حقوق محفوظ است
+    </div>
+
+  </div>
 
   <script type="module">
+
     import { createClient } from
       "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 
@@ -244,41 +249,90 @@
     );
 
     const form = document.getElementById("loginForm");
-    const button = document.getElementById("loginButton");
+    const usernameInput = document.getElementById("username");
+    const passwordInput = document.getElementById("password");
+    const loginBtn = document.getElementById("loginBtn");
     const message = document.getElementById("message");
 
     function showMessage(text, type) {
       message.textContent = text;
-      message.className = "message " + type;
+      message.className = type;
     }
 
+    function setLoading(loading) {
+      loginBtn.disabled = loading;
+      loginBtn.textContent = loading
+        ? "در حال بررسی..."
+        : "ورود به سامانه";
+    }
+
+    // بررسی نشست قبلی مدیر
+    async function checkExistingSession() {
+      const { data } = await supabase.auth.getSession();
+
+      if (!data.session) return;
+
+      const { data: userData, error: userError } =
+        await supabase.auth.getUser();
+
+      if (userError || !userData.user) return;
+
+      const { data: profile, error } = await supabase
+        .from("profiles")
+        .select("role, is_active")
+        .eq("id", userData.user.id)
+        .single();
+
+      if (
+        !error &&
+        profile &&
+        profile.role === "admin" &&
+        profile.is_active === true
+      ) {
+        window.location.replace("admin.html");
+      }
+    }
+
+    // ورود کاربر
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
 
-      const username = document
-        .getElementById("username")
-        .value.trim().toLowerCase();
+      const username = usernameInput.value.trim().toLowerCase();
+      const password = passwordInput.value;
 
-      const password = document
-        .getElementById("password")
-        .value;
+      if (!username || !password) {
+        showMessage(
+          "لطفاً نام کاربری و رمز عبور را وارد کنید.",
+          "error"
+        );
+        return;
+      }
 
-      button.disabled = true;
-      button.textContent = "در حال بررسی...";
-      message.className = "message";
+      setLoading(true);
+      message.className = "";
+      message.style.display = "none";
 
       try {
-        const { data, error } =
-          await supabase.functions.invoke(
-            "login-with-username",
-            {
-              body: { username, password }
-            }
-          );
 
-        if (error || !data?.success || !data?.session) {
+        const { data, error } = await supabase.functions.invoke(
+          "login-with-username",
+          {
+            body: {
+              username: username,
+              password: password
+            }
+          }
+        );
+
+        if (error) {
           throw new Error(
-            data?.error || "نام کاربری یا رمز عبور صحیح نیست."
+            "ارتباط با سرور برقرار نشد. دوباره تلاش کنید."
+          );
+        }
+
+        if (!data || !data.success || !data.session || !data.profile) {
+          throw new Error(
+            data?.error || "نام کاربری یا رمز عبور اشتباه است."
           );
         }
 
@@ -289,33 +343,51 @@
           });
 
         if (sessionError) {
-          throw sessionError;
+          throw new Error(
+            "ورود انجام شد اما ایجاد نشست ناموفق بود."
+          );
         }
 
-        const roleName =
-          data.profile.role === "admin"
-            ? "مدیر اصلی"
-            : "معلم";
+        if (data.profile.role === "admin") {
 
-        showMessage(
-          "ورود موفقیت‌آمیز بود. خوش آمدید " +
-          data.profile.full_name +
-          " (" + roleName + ")",
-          "success"
-        );
+          showMessage(
+            "ورود موفق بود. در حال انتقال به داشبورد...",
+            "success"
+          );
 
-        button.textContent = "ورود موفق بود";
+          window.location.replace("admin.html");
+          return;
+
+        }
+
+        if (data.profile.role === "teacher") {
+
+          await supabase.auth.signOut();
+
+          throw new Error(
+            "ورود معلم انجام شد، اما پنل معلم هنوز آماده نیست."
+          );
+
+        }
+
+        await supabase.auth.signOut();
+
+        throw new Error("نقش کاربری معتبر نیست.");
 
       } catch (error) {
+
         showMessage(
-          error.message || "ارتباط با سرور برقرار نشد.",
+          error.message || "خطایی رخ داد. دوباره تلاش کنید.",
           "error"
         );
 
-        button.disabled = false;
-        button.textContent = "ورود به سامانه";
+      } finally {
+        setLoading(false);
       }
     });
+
+    checkExistingSession();
+
   </script>
 
 </body>
