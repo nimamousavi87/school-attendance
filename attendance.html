@@ -1,1 +1,392 @@
 
+
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#080b14">
+  <title>ثبت حضور | هنرستان علم و فن</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Vazirmatn, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 20px;
+      display: grid;
+      place-items: center;
+      background:
+        radial-gradient(circle at top right, #142b50 0, transparent 38%),
+        radial-gradient(circle at bottom left, #172044 0, transparent 35%),
+        #080b14;
+      color: #f5f7ff;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 460px;
+    }
+
+    .brand {
+      text-align: center;
+      margin-bottom: 22px;
+    }
+
+    .logo {
+      width: 62px;
+      height: 62px;
+      margin: 0 auto 12px;
+      display: grid;
+      place-items: center;
+      border-radius: 20px;
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      font-size: 28px;
+      box-shadow: 0 10px 35px #2563eb40;
+    }
+
+    .brand h1 {
+      font-size: 21px;
+      margin: 0;
+    }
+
+    .brand p {
+      color: #929bb0;
+      font-size: 13px;
+      margin: 7px 0 0;
+    }
+
+    .card {
+      background: #111827eF;
+      border: 1px solid #27334b;
+      border-radius: 22px;
+      padding: 25px;
+      box-shadow: 0 20px 60px #0005;
+    }
+
+    .card h2 {
+      margin: 0 0 8px;
+      font-size: 19px;
+    }
+
+    .description {
+      color: #929bb0;
+      font-size: 13px;
+      line-height: 1.9;
+      margin: 0 0 22px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 9px;
+      font-size: 13px;
+      color: #dce4f5;
+    }
+
+    input {
+      width: 100%;
+      height: 52px;
+      border-radius: 12px;
+      border: 1px solid #34415b;
+      background: #0b1220;
+      color: white;
+      outline: none;
+      padding: 0 14px;
+      font-size: 14px;
+      margin-bottom: 19px;
+    }
+
+    input:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px #3b82f620;
+    }
+
+    .class-info {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+
+    .info-item {
+      background: #1b2940;
+      border: 1px solid #2c3d5b;
+      padding: 13px;
+      border-radius: 13px;
+    }
+
+    .info-item span {
+      display: block;
+      color: #9baac4;
+      font-size: 12px;
+      margin-bottom: 5px;
+    }
+
+    .info-item strong {
+      font-size: 15px;
+    }
+
+    button {
+      width: 100%;
+      height: 52px;
+      border: 0;
+      border-radius: 13px;
+      background: linear-gradient(135deg, #2563eb, #4f46e5);
+      color: white;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: .2s;
+    }
+
+    button:hover {
+      filter: brightness(1.12);
+    }
+
+    button:disabled {
+      opacity: .55;
+      cursor: not-allowed;
+    }
+
+    .message {
+      display: none;
+      padding: 13px;
+      border-radius: 12px;
+      margin-top: 17px;
+      font-size: 13px;
+      line-height: 1.8;
+    }
+
+    .message.error {
+      display: block;
+      background: #451d2b;
+      border: 1px solid #87364c;
+      color: #ffb7c6;
+    }
+
+    .message.success {
+      display: block;
+      background: #123b32;
+      border: 1px solid #26775e;
+      color: #a8f0d4;
+    }
+
+    .message.info {
+      display: block;
+      background: #172c4b;
+      border: 1px solid #315b91;
+      color: #bfdbfe;
+    }
+
+    .footer {
+      text-align: center;
+      color: #68758e;
+      font-size: 11px;
+      margin-top: 20px;
+    }
+
+    @media (max-width: 380px) {
+      .card {
+        padding: 19px;
+      }
+
+      .brand h1 {
+        font-size: 18px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="container">
+
+    <header class="brand">
+      <div class="logo">🏫</div>
+      <h1>هنرستان علم و فن</h1>
+      <p>سامانه هوشمند حضور و غیاب</p>
+    </header>
+
+    <section class="card">
+
+      <h2>ثبت حضور دانش‌آموز</h2>
+      <p class="description">
+        لطفاً نام و نام خانوادگی خود را وارد کنید.
+        مشخصات کلاس به‌صورت خودکار نمایش داده می‌شود.
+      </p>
+
+      <div class="class-info">
+        <div class="info-item">
+          <span>پایه تحصیلی</span>
+          <strong id="grade">در حال دریافت...</strong>
+        </div>
+
+        <div class="info-item">
+          <span>رشته تحصیلی</span>
+          <strong id="field">در حال دریافت...</strong>
+        </div>
+      </div>
+
+      <form id="attendanceForm">
+
+        <label for="studentName">نام و نام خانوادگی</label>
+        <input
+          type="text"
+          id="studentName"
+          placeholder="مثلاً علی رضایی"
+          minlength="3"
+          maxlength="100"
+          autocomplete="name"
+          required
+        >
+
+        <button type="submit" id="submitBtn" disabled>
+          در حال دریافت اطلاعات جلسه...
+        </button>
+
+      </form>
+
+      <div id="message" class="message"></div>
+
+    </section>
+
+    <footer class="footer">
+      هنرستان علم و فن | سامانه ثبت حضور دانش‌آموزان
+    </footer>
+
+  </main>
+
+  <script type="module">
+    import { createClient } from
+      "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+    const SUPABASE_URL =
+      "https://tmogtldkiyxzdvercwro.supabase.co";
+
+    const SUPABASE_KEY =
+      "sb_publishable_LMwuOofGL2VvLX1eE47czA_QLzYb1lU";
+
+    const supabase = createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+    const params = new URLSearchParams(location.search);
+    const sessionToken = params.get("token");
+
+    const gradeElement = document.getElementById("grade");
+    const fieldElement = document.getElementById("field");
+    const form = document.getElementById("attendanceForm");
+    const nameInput = document.getElementById("studentName");
+    const submitBtn = document.getElementById("submitBtn");
+    const message = document.getElementById("message");
+
+    let sessionReady = false;
+
+    function showMessage(text, type) {
+      message.textContent = text;
+      message.className = "message " + type;
+    }
+
+    function setUnavailable(text) {
+      showMessage(text, "error");
+      submitBtn.disabled = true;
+      submitBtn.textContent = "ثبت حضور امکان‌پذیر نیست";
+    }
+
+    async function loadSession() {
+      if (!sessionToken) {
+        setUnavailable("لینک جلسه معتبر نیست یا کد جلسه در آن وجود ندارد.");
+        return;
+      }
+
+      try {
+        const { data, error } = await supabase.functions.invoke(
+          "get-attendance-session",
+          {
+            body: { token: sessionToken }
+          }
+        );
+
+        if (error || !data?.success || !data.session) {
+          setUnavailable(
+            data?.error || "اطلاعات جلسه دریافت نشد. لطفاً با معلم خود تماس بگیرید."
+          );
+          return;
+        }
+
+        gradeElement.textContent = data.session.grade;
+        fieldElement.textContent = data.session.field;
+
+        sessionReady = true;
+        submitBtn.disabled = false;
+        submitBtn.textContent = "ثبت حضور";
+
+      } catch {
+        setUnavailable("ارتباط با سرور برقرار نشد. دوباره تلاش کنید.");
+      }
+    }
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      if (!sessionReady || !sessionToken) return;
+
+      const studentName = nameInput.value.trim();
+
+      if (studentName.length < 3 || studentName.length > 100) {
+        showMessage("نام و نام خانوادگی باید بین ۳ تا ۱۰۰ کاراکتر باشد.", "error");
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = "در حال ثبت حضور...";
+
+      try {
+        const { data, error } = await supabase.functions.invoke(
+          "submit-attendance",
+          {
+            body: {
+              token: sessionToken,
+              student_name: studentName
+            }
+          }
+        );
+
+        if (error || !data?.success) {
+          showMessage(
+            data?.error || "ثبت حضور انجام نشد. لطفاً دوباره تلاش کنید.",
+            "error"
+          );
+
+          submitBtn.disabled = false;
+          submitBtn.textContent = "ثبت حضور";
+          return;
+        }
+
+        form.reset();
+        showMessage(
+          "حضور شما با موفقیت ثبت شد. با تشکر!",
+          "success"
+        );
+
+        submitBtn.textContent = "حضور ثبت شد";
+
+      } catch {
+        showMessage("خطا در ارتباط با سرور. دوباره تلاش کنید.", "error");
+        submitBtn.disabled = false;
+        submitBtn.textContent = "ثبت حضور";
+      }
+    });
+
+    loadSession();
+  </script>
+
+</body>
+</html>
