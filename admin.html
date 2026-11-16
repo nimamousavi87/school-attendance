@@ -1,1 +1,390 @@
 
+
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#080d18">
+  <title>داشبورد مدیریت | علم و فن</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Tahoma, Arial, sans-serif;
+      background: #080d18;
+      color: #f1f5f9;
+    }
+
+    .layout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    aside {
+      width: 245px;
+      background: #101827;
+      border-left: 1px solid #263247;
+      padding: 25px 16px;
+      flex-shrink: 0;
+    }
+
+    .brand {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .school {
+      color: #94a3b8;
+      font-size: 12px;
+      margin-bottom: 35px;
+    }
+
+    .menu-title {
+      color: #64748b;
+      font-size: 12px;
+      margin: 25px 10px 12px;
+    }
+
+    .menu-item {
+      padding: 13px 12px;
+      margin-bottom: 7px;
+      border-radius: 10px;
+      color: #cbd5e1;
+      background: #182438;
+      font-size: 14px;
+    }
+
+    .menu-item.active {
+      background: #174c91;
+      color: white;
+    }
+
+    main {
+      flex: 1;
+      min-width: 0;
+      padding: 30px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-bottom: 30px;
+    }
+
+    h1 {
+      font-size: 23px;
+      margin: 0 0 10px;
+    }
+
+    .subtitle {
+      color: #94a3b8;
+      font-size: 13px;
+    }
+
+    .admin-name {
+      color: #60a5fa;
+      font-size: 14px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 17px;
+    }
+
+    .card {
+      background: #111c2e;
+      border: 1px solid #26364e;
+      border-radius: 15px;
+      padding: 22px;
+      min-width: 0;
+    }
+
+    .card-label {
+      color: #94a3b8;
+      font-size: 13px;
+      margin-bottom: 17px;
+    }
+
+    .number {
+      font-size: 30px;
+      font-weight: bold;
+      color: #60a5fa;
+    }
+
+    .section {
+      margin-top: 25px;
+    }
+
+    .section h2 {
+      font-size: 17px;
+      margin: 0 0 15px;
+    }
+
+    .welcome {
+      line-height: 2;
+      color: #cbd5e1;
+      font-size: 14px;
+    }
+
+    .status {
+      margin-top: 20px;
+      padding: 13px;
+      border-radius: 10px;
+      background: #17263a;
+      color: #93c5fd;
+      font-size: 13px;
+    }
+
+    button {
+      border: 0;
+      background: #26364e;
+      color: white;
+      border-radius: 9px;
+      padding: 11px 16px;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    button:hover { background: #365477; }
+
+    #error {
+      color: #fca5a5;
+      margin-top: 15px;
+      font-size: 13px;
+    }
+
+    @media (max-width: 950px) {
+      .stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 650px) {
+      .layout { display: block; }
+
+      aside {
+        width: 100%;
+        padding: 18px;
+        border-left: 0;
+        border-bottom: 1px solid #263247;
+      }
+
+      .school { margin-bottom: 15px; }
+
+      .menu-title { margin-top: 15px; }
+
+      main { padding: 20px 15px; }
+
+      h1 { font-size: 19px; }
+
+      .stats { gap: 10px; }
+
+      .card { padding: 16px; }
+
+      .number { font-size: 25px; }
+    }
+
+    @media (max-width: 360px) {
+      .stats { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="layout">
+
+    <aside>
+      <div class="brand">مدیریت علم و فن</div>
+      <div class="school">سامانه حضور و غیاب هنرستان</div>
+
+      <div class="menu-title">منوی اصلی</div>
+
+      <div class="menu-item active">🏠 نمای کلی</div>
+      <div class="menu-item">👨‍🏫 مدیریت معلم‌ها</div>
+      <div class="menu-item">🏫 مدیریت کلاس‌ها</div>
+      <div class="menu-item">📋 جلسات حضور و غیاب</div>
+      <div class="menu-item">📊 گزارش‌ها</div>
+
+      <div class="menu-title">حساب کاربری</div>
+      <button id="logoutBtn">خروج از حساب</button>
+    </aside>
+
+    <main>
+      <header>
+        <div>
+          <h1>داشبورد مدیر اصلی</h1>
+          <div class="subtitle">مدیریت سامانه حضور و غیاب هنرستان علم و فن</div>
+        </div>
+
+        <div class="admin-name" id="adminName">
+          در حال بررسی حساب...
+        </div>
+      </header>
+
+      <div class="stats">
+        <div class="card">
+          <div class="card-label">تعداد معلم‌ها</div>
+          <div class="number" id="teachersCount">—</div>
+        </div>
+
+        <div class="card">
+          <div class="card-label">تعداد کلاس‌ها</div>
+          <div class="number" id="classesCount">—</div>
+        </div>
+
+        <div class="card">
+          <div class="card-label">جلسات ثبت‌شده</div>
+          <div class="number" id="sessionsCount">—</div>
+        </div>
+
+        <div class="card">
+          <div class="card-label">حضورهای ثبت‌شده</div>
+          <div class="number" id="attendanceCount">—</div>
+        </div>
+      </div>
+
+      <section class="section card">
+        <h2>خوش آمدید 👋</h2>
+        <div class="welcome">
+          به پنل مدیریت سامانه حضور و غیاب هنرستان علم و فن خوش آمدید.
+          از این بخش می‌توانید وضعیت کلی سامانه را مشاهده کنید.
+        </div>
+        <div class="status" id="status">
+          در حال دریافت اطلاعات از پایگاه داده...
+        </div>
+        <div id="error"></div>
+      </section>
+    </main>
+  </div>
+
+  <script type="module">
+    import { createClient } from
+      "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+    const SUPABASE_URL =
+      "https://tmogtldkiyxzdvercwro.supabase.co";
+
+    const SUPABASE_KEY =
+      "sb_publishable_LMwuOofGL2VvLX1eE47czA_QLzYb1lU";
+
+    const supabase = createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+    const $ = (id) => document.getElementById(id);
+
+    async function startDashboard() {
+      try {
+        const { data: sessionData, error: sessionError } =
+          await supabase.auth.getSession();
+
+        if (sessionError || !sessionData.session) {
+          location.replace("index.html");
+          return;
+        }
+
+        const { data: userData, error: userError } =
+          await supabase.auth.getUser();
+
+        if (userError || !userData.user) {
+          location.replace("index.html");
+          return;
+        }
+
+        const { data: profile, error: profileError } =
+          await supabase
+            .from("profiles")
+            .select("full_name, role, is_active")
+            .eq("id", userData.user.id)
+            .single();
+
+        if (
+          profileError ||
+          !profile ||
+          profile.role !== "admin" ||
+          profile.is_active !== true
+        ) {
+          await supabase.auth.signOut();
+          location.replace("index.html");
+          return;
+        }
+
+        $("adminName").textContent =
+          "مدیر: " + profile.full_name;
+
+        const results = await Promise.all([
+          supabase
+            .from("profiles")
+            .select("*", { count: "exact", head: true })
+            .eq("role", "teacher"),
+
+          supabase
+            .from("classes")
+            .select("*", { count: "exact", head: true }),
+
+          supabase
+            .from("sessions")
+            .select("*", { count: "exact", head: true }),
+
+          supabase
+            .from("attendance")
+            .select("*", { count: "exact", head: true })
+        ]);
+
+        const names = [
+          "معلم‌ها",
+          "کلاس‌ها",
+          "جلسات",
+          "حضورها"
+        ];
+
+        for (let i = 0; i < results.length; i++) {
+          if (results[i].error) {
+            throw new Error(
+              "دریافت آمار " + names[i] + " ناموفق بود."
+            );
+          }
+        }
+
+        $("teachersCount").textContent =
+          results[0].count ?? 0;
+
+        $("classesCount").textContent =
+          results[1].count ?? 0;
+
+        $("sessionsCount").textContent =
+          results[2].count ?? 0;
+
+        $("attendanceCount").textContent =
+          results[3].count ?? 0;
+
+        $("status").textContent =
+          "اتصال برقرار است و اطلاعات با موفقیت دریافت شد.";
+
+      } catch (error) {
+        $("status").textContent =
+          "دریافت اطلاعات با مشکل مواجه شد.";
+
+        $("error").textContent =
+          error.message || "خطای نامشخص";
+      }
+    }
+
+    $("logoutBtn").addEventListener("click", async () => {
+      await supabase.auth.signOut();
+      location.replace("index.html");
+    });
+
+    startDashboard();
+  </script>
+</body>
+</html>
