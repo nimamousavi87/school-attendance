@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
@@ -7,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#080d18">
   <meta name="description" content="سامانه هوشمند حضور و غیاب هنرستان علم و فن">
-  <title>حضور و غیاب | هنرستان علم و فن</title>
+  <title>ورود | هنرستان علم و فن</title>
 
   <style>
     * {
@@ -24,8 +23,9 @@
         radial-gradient(circle at 85% 85%, #164e6355, transparent 35%),
         #080d18;
       color: #f1f5f9;
-      display: grid;
-      place-items: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       padding: 20px;
     }
 
@@ -33,7 +33,7 @@
       width: 100%;
       max-width: 430px;
       padding: 38px 30px;
-      background: #111a2beF;
+      background: #111a2b;
       border: 1px solid #263c5c;
       border-radius: 24px;
       box-shadow: 0 25px 80px #0008;
@@ -47,14 +47,12 @@
       margin: 0 auto 22px;
       border-radius: 22px;
       background: linear-gradient(135deg, #2563eb, #0ea5e9);
-      box-shadow: 0 10px 30px #2563eb55;
       font-size: 35px;
     }
 
-    .school-name {
+    h1 {
       text-align: center;
-      font-size: 25px;
-      font-weight: bold;
+      font-size: 24px;
       margin-bottom: 10px;
     }
 
@@ -81,14 +79,14 @@
 
     input {
       width: 100%;
-      padding: 15px;
+      min-height: 48px;
+      padding: 14px;
       border: 1px solid #334155;
       border-radius: 12px;
       background: #0b1220;
       color: white;
       outline: none;
       font-size: 14px;
-      transition: .2s;
     }
 
     input:focus {
@@ -102,8 +100,9 @@
 
     button {
       width: 100%;
-      padding: 15px;
-      margin-top: 27px;
+      min-height: 49px;
+      padding: 14px;
+      margin-top: 25px;
       border: 0;
       border-radius: 12px;
       background: linear-gradient(135deg, #2563eb, #0ea5e9);
@@ -116,7 +115,36 @@
 
     button:hover {
       filter: brightness(1.12);
-      transform: translateY(-2px);
+    }
+
+    button:disabled {
+      opacity: .6;
+      cursor: wait;
+    }
+
+    .message {
+      display: none;
+      margin-top: 18px;
+      padding: 13px;
+      border-radius: 10px;
+      font-size: 13px;
+      line-height: 1.9;
+      text-align: center;
+      overflow-wrap: anywhere;
+    }
+
+    .error {
+      display: block;
+      color: #fecaca;
+      background: #7f1d1d44;
+      border: 1px solid #991b1b;
+    }
+
+    .success {
+      display: block;
+      color: #bbf7d0;
+      background: #14532d44;
+      border: 1px solid #166534;
     }
 
     .footer {
@@ -127,20 +155,24 @@
       line-height: 2;
     }
 
-    .version {
-      color: #475569;
-      text-align: center;
-      font-size: 10px;
-      margin-top: 10px;
-    }
-
     @media (max-width: 480px) {
-      .login-card {
-        padding: 30px 22px;
+      body {
+        padding: 14px;
       }
 
-      .school-name {
-        font-size: 22px;
+      .login-card {
+        padding: 30px 21px;
+        border-radius: 19px;
+      }
+
+      h1 {
+        font-size: 21px;
+      }
+    }
+
+    @media (max-height: 600px) {
+      body {
+        align-items: flex-start;
       }
     }
   </style>
@@ -152,7 +184,7 @@
 
     <div class="logo">🏫</div>
 
-    <h1 class="school-name">هنرستان علم و فن</h1>
+    <h1>هنرستان علم و فن</h1>
 
     <p class="subtitle">
       سامانه هوشمند مدیریت حضور و غیاب دانش‌آموزان
@@ -180,9 +212,13 @@
         required
       >
 
-      <button type="submit">ورود به سامانه</button>
+      <button id="loginButton" type="submit">
+        ورود به سامانه
+      </button>
 
     </form>
+
+    <div id="message" class="message" role="status"></div>
 
     <div class="footer">
       هنرستان علم و فن
@@ -190,17 +226,95 @@
       سامانه اختصاصی مدیریت آموزشی و حضور و غیاب
     </div>
 
-    <div class="version">
-      نسخه 1.0.0
-    </div>
-
   </main>
 
-  <script>
-    document.getElementById("loginForm").addEventListener("submit", function(event) {
+  <script type="module">
+    import { createClient } from
+      "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+    const SUPABASE_URL =
+      "https://tmogtldkiyxzdvercwro.supabase.co";
+
+    const SUPABASE_KEY =
+      "sb_publishable_LMwuOofGL2VvLX1eE47czA_QLzYb1lU";
+
+    const supabase = createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+    const form = document.getElementById("loginForm");
+    const button = document.getElementById("loginButton");
+    const message = document.getElementById("message");
+
+    function showMessage(text, type) {
+      message.textContent = text;
+      message.className = "message " + type;
+    }
+
+    form.addEventListener("submit", async (event) => {
       event.preventDefault();
 
-      alert("اتصال امن به سامانه در مرحله بعد فعال می‌شود.");
+      const username = document
+        .getElementById("username")
+        .value.trim().toLowerCase();
+
+      const password = document
+        .getElementById("password")
+        .value;
+
+      button.disabled = true;
+      button.textContent = "در حال بررسی...";
+      message.className = "message";
+
+      try {
+        const { data, error } =
+          await supabase.functions.invoke(
+            "login-with-username",
+            {
+              body: { username, password }
+            }
+          );
+
+        if (error || !data?.success || !data?.session) {
+          throw new Error(
+            data?.error || "نام کاربری یا رمز عبور صحیح نیست."
+          );
+        }
+
+        const { error: sessionError } =
+          await supabase.auth.setSession({
+            access_token: data.session.access_token,
+            refresh_token: data.session.refresh_token
+          });
+
+        if (sessionError) {
+          throw sessionError;
+        }
+
+        const roleName =
+          data.profile.role === "admin"
+            ? "مدیر اصلی"
+            : "معلم";
+
+        showMessage(
+          "ورود موفقیت‌آمیز بود. خوش آمدید " +
+          data.profile.full_name +
+          " (" + roleName + ")",
+          "success"
+        );
+
+        button.textContent = "ورود موفق بود";
+
+      } catch (error) {
+        showMessage(
+          error.message || "ارتباط با سرور برقرار نشد.",
+          "error"
+        );
+
+        button.disabled = false;
+        button.textContent = "ورود به سامانه";
+      }
     });
   </script>
 
