@@ -21,7 +21,10 @@
 
     button, input, select { font: inherit; }
 
-    .layout { display: flex; min-height: 100vh; }
+    .layout {
+      display: flex;
+      min-height: 100vh;
+    }
 
     aside {
       width: 245px;
@@ -31,7 +34,10 @@
       flex-shrink: 0;
     }
 
-    .brand { font-size: 20px; font-weight: 800; }
+    .brand {
+      font-size: 20px;
+      font-weight: 800;
+    }
 
     .school {
       color: #94a3b8;
@@ -77,7 +83,10 @@
       margin-bottom: 28px;
     }
 
-    h1 { font-size: 23px; margin: 0 0 10px; }
+    h1 {
+      font-size: 23px;
+      margin: 0 0 10px;
+    }
 
     .subtitle {
       color: #94a3b8;
@@ -135,7 +144,10 @@
       padding: 18px;
     }
 
-    .class-icon { font-size: 24px; margin-bottom: 12px; }
+    .class-icon {
+      font-size: 24px;
+      margin-bottom: 12px;
+    }
 
     .class-name {
       font-size: 15px;
@@ -242,6 +254,7 @@
       border: 1px solid #2b405d;
       padding: 17px;
       border-radius: 12px;
+      min-width: 0;
     }
 
     .session-top {
@@ -304,6 +317,67 @@
 
     .session-actions button {
       font-size: 12px;
+    }
+
+    /* بخش فهرست دانش‌آموزان */
+
+    .attendance-box {
+      margin-top: 15px;
+      padding: 14px;
+      background: #101c2e;
+      border: 1px solid #30425e;
+      border-radius: 10px;
+    }
+
+    .attendance-box summary {
+      cursor: pointer;
+      color: #93c5fd;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 5px;
+      line-height: 2;
+    }
+
+    .attendance-list {
+      display: grid;
+      gap: 9px;
+      margin-top: 13px;
+    }
+
+    .attendance-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 12px;
+      background: #17263a;
+      border: 1px solid #2b405d;
+      border-radius: 8px;
+    }
+
+    .student-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: #f1f5f9;
+    }
+
+    .student-time {
+      font-size: 11px;
+      color: #94a3b8;
+    }
+
+    .attendance-empty {
+      color: #94a3b8;
+      font-size: 12px;
+      padding: 12px 5px;
+      line-height: 2;
+    }
+
+    .attendance-total {
+      color: #86efac;
+      font-size: 12px;
+      margin-top: 12px;
     }
 
     #error, #formMessage {
@@ -579,6 +653,7 @@
         createElement("option", "", "کلاسی وجود ندارد")
       );
 
+      $("createBtn").disabled = true;
       return;
     }
 
@@ -620,6 +695,7 @@
 
   async function loadSessions() {
 
+    // دریافت جلسات متعلق به معلم واردشده
     const { data, error } = await supabase
       .from("sessions")
       .select(`
@@ -654,9 +730,35 @@
           "هنوز جلسه‌ای ایجاد نشده است."
         )
       );
-
       return;
     }
+
+    // دریافت حضورهای همین جلسات
+    const sessionIds = sessions.map(session => session.id);
+
+    const { data: attendanceData, error: attendanceError } =
+      await supabase
+        .from("attendance")
+        .select("id, session_id, student_name, created_at")
+        .in("session_id", sessionIds)
+        .order("created_at", { ascending: true });
+
+    if (attendanceError) throw attendanceError;
+
+    const attendanceRecords = attendanceData || [];
+
+    // دسته‌بندی حضورها بر اساس شناسه جلسه
+    const attendanceMap = new Map();
+
+    attendanceRecords.forEach(record => {
+
+      if (!attendanceMap.has(record.session_id)) {
+        attendanceMap.set(record.session_id, []);
+      }
+
+      attendanceMap.get(record.session_id).push(record);
+
+    });
 
     sessions.forEach(session => {
 
@@ -697,13 +799,16 @@
 
       const status = createElement(
         "span",
-        "status " + (session.status === "open" ? "open" : "closed"),
+        "status " + (
+          session.status === "open" ? "open" : "closed"
+        ),
         session.status === "open" ? "باز" : "بسته"
       );
 
       top.append(info, status);
       card.appendChild(top);
 
+      // ساخت لینک جلسه
       const attendanceUrl = new URL(
         "attendance.html",
         window.location.href
@@ -722,6 +827,81 @@
 
       card.appendChild(link);
 
+      // دریافت فهرست دانش‌آموزان حاضر در همین جلسه
+      const records = attendanceMap.get(session.id) || [];
+
+      const attendanceBox = createElement(
+        "div",
+        "attendance-box"
+      );
+
+      const details = document.createElement("details");
+      const summary = document.createElement("summary");
+
+      summary.textContent =
+        "👥 فهرست دانش‌آموزان حاضر (" +
+        records.length +
+        " نفر)";
+
+      details.appendChild(summary);
+
+      if (records.length === 0) {
+
+        details.appendChild(
+          createElement(
+            "div",
+            "attendance-empty",
+            "هنوز هیچ دانش‌آموزی در این جلسه حضور خود را ثبت نکرده است."
+          )
+        );
+
+      } else {
+
+        const attendanceList = createElement(
+          "div",
+          "attendance-list"
+        );
+
+        records.forEach((record, index) => {
+
+          const item = createElement(
+            "div",
+            "attendance-item"
+          );
+
+          const name = createElement(
+            "div",
+            "student-name",
+            (index + 1) + ". " + record.student_name
+          );
+
+          const time = createElement(
+            "div",
+            "student-time",
+            "زمان ثبت: " + formatDate(record.created_at)
+          );
+
+          item.append(name, time);
+          attendanceList.appendChild(item);
+
+        });
+
+        details.appendChild(attendanceList);
+      }
+
+      attendanceBox.appendChild(details);
+
+      attendanceBox.appendChild(
+        createElement(
+          "div",
+          "attendance-total",
+          "تعداد کل حاضرین: " + records.length + " نفر"
+        )
+      );
+
+      card.appendChild(attendanceBox);
+
+      // دکمه‌های عملیات جلسه
       const actions = createElement("div", "session-actions");
 
       const copyButton = createElement(
@@ -733,6 +913,7 @@
       copyButton.addEventListener("click", async () => {
 
         try {
+
           await navigator.clipboard.writeText(attendanceUrl.href);
 
           copyButton.textContent = "کپی شد ✓";
@@ -742,13 +923,19 @@
           }, 1800);
 
         } catch {
-          window.prompt("لینک جلسه را کپی کنید:", attendanceUrl.href);
+
+          window.prompt(
+            "لینک جلسه را کپی کنید:",
+            attendanceUrl.href
+          );
+
         }
 
       });
 
       actions.appendChild(copyButton);
 
+      // دکمه بستن جلسه
       if (session.status === "open") {
 
         const closeButton = createElement(
@@ -776,7 +963,9 @@
 
           if (updateError) {
 
-            alert("بستن جلسه انجام نشد. لطفاً دوباره تلاش کنید.");
+            alert(
+              "بستن جلسه انجام نشد. لطفاً دوباره تلاش کنید."
+            );
 
             closeButton.disabled = false;
             closeButton.textContent = "بستن جلسه";
@@ -803,7 +992,10 @@
 
     const { count, error } = await supabase
       .from("attendance")
-      .select("*", { count: "exact", head: true });
+      .select("*", {
+        count: "exact",
+        head: true
+      });
 
     if (error) throw error;
 
@@ -827,7 +1019,9 @@
     );
 
     if (!allowed) {
-      showFormMessage("این کلاس به حساب شما اختصاص داده نشده است.");
+      showFormMessage(
+        "این کلاس به حساب شما اختصاص داده نشده است."
+      );
       return;
     }
 
@@ -876,16 +1070,21 @@
       newUrl.searchParams.set("token", data.access_token);
 
       try {
+
         await navigator.clipboard.writeText(newUrl.href);
+
         showFormMessage(
           "جلسه ساخته شد و لینک آن هم کپی شد.",
           "success"
         );
+
       } catch {
+
         showFormMessage(
           "جلسه ساخته شد. برای دریافت لینک، از بخش جلسات روی کپی لینک بزنید.",
           "success"
         );
+
       }
 
       $("sessions").scrollIntoView({
@@ -945,6 +1144,7 @@
         profile.role !== "teacher" ||
         profile.is_active !== true
       ) {
+
         await supabase.auth.signOut();
         location.replace("index.html");
         return;
@@ -968,11 +1168,16 @@
 
   }
 
-  $("createForm").addEventListener("submit", createSession);
+  $("createForm").addEventListener(
+    "submit",
+    createSession
+  );
 
   $("logoutBtn").addEventListener("click", async () => {
+
     await supabase.auth.signOut();
     location.replace("index.html");
+
   });
 
   start();
