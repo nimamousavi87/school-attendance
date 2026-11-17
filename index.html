@@ -9,7 +9,9 @@
   <title>ورود به سامانه | علم و فن</title>
 
   <style>
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       margin: 0;
@@ -121,8 +123,14 @@
       transition: 0.2s;
     }
 
-    button:hover { filter: brightness(1.12); }
-    button:disabled { opacity: 0.6; cursor: not-allowed; }
+    button:hover {
+      filter: brightness(1.12);
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
 
     #message {
       display: none;
@@ -156,8 +164,13 @@
     }
 
     @media (max-width: 480px) {
-      .login-box { padding: 25px 20px; }
-      .logo h1 { font-size: 22px; }
+      .login-box {
+        padding: 25px 20px;
+      }
+
+      .logo h1 {
+        font-size: 22px;
+      }
     }
   </style>
 </head>
@@ -183,6 +196,7 @@
       <form id="loginForm">
 
         <label for="username">نام کاربری</label>
+
         <input
           type="text"
           id="username"
@@ -195,6 +209,7 @@
         >
 
         <label for="password">رمز عبور</label>
+
         <input
           type="password"
           id="password"
@@ -248,6 +263,7 @@
 
     function setLoading(loading) {
       loginBtn.disabled = loading;
+
       loginBtn.textContent = loading
         ? "در حال بررسی..."
         : "ورود به سامانه";
@@ -266,12 +282,17 @@
 
       const { data: profile, error } = await supabase
         .from("profiles")
-        .select("role, is_active")
+        .select("role, is_active, must_change_password")
         .eq("id", userData.user.id)
         .single();
 
       if (error || !profile || profile.is_active !== true) {
         await supabase.auth.signOut();
+        return;
+      }
+
+      if (profile.must_change_password === true) {
+        location.replace("change-password.html");
         return;
       }
 
@@ -316,9 +337,29 @@
           }
         );
 
+        // استخراج پیام واقعی سرور
         if (error) {
+
+          let serverMessage = "";
+
+          try {
+            if (
+              error.context &&
+              typeof error.context.json === "function"
+            ) {
+              const responseData = await error.context.json();
+              serverMessage = responseData?.error || "";
+            }
+          } catch {
+            serverMessage = "";
+          }
+
+          if (serverMessage) {
+            throw new Error(serverMessage);
+          }
+
           throw new Error(
-            "ارتباط با سرور برقرار نشد. دوباره تلاش کنید."
+            "ارتباط با سرور برقرار نشد. لطفاً اتصال اینترنت را بررسی کنید."
           );
         }
 
@@ -332,10 +373,6 @@
             data?.error ||
             "نام کاربری یا رمز عبور اشتباه است."
           );
-        }
-
-        if (data.profile.is_active === false) {
-          throw new Error("حساب کاربری شما غیرفعال است.");
         }
 
         if (
@@ -352,15 +389,19 @@
           });
 
         if (sessionError) {
-          throw new Error(
-            "ایجاد نشست ورود ناموفق بود."
-          );
+          throw new Error("ایجاد نشست ورود ناموفق بود.");
         }
 
         showMessage(
           "ورود موفق بود. در حال انتقال...",
           "success"
         );
+
+        // انتقال حساب‌هایی که باید رمز خود را تغییر دهند
+        if (data.profile.must_change_password === true) {
+          location.replace("change-password.html");
+          return;
+        }
 
         if (data.profile.role === "admin") {
           location.replace("admin.html");
